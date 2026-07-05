@@ -34,7 +34,7 @@ class Solution:
                 return [index, hash[target - num]]
             hash[num] = index
         return
-
+```
 
 ## ACM version
 
@@ -46,36 +46,30 @@ class Solution:
 - 需要写 `while` 或 `for line in sys.stdin` 循环处理，直到文件结束（EOF）
 
 ```python
-
 # ACM读取输入输出部分，支持多组示例
-for line in sys.stdin: # 每次读取一行输入
-    parts = line.strip().split() # 第一行：去掉首尾空白，按空格切分
-    if len(parts) < 2: # 题目要求第一行表示数组长度和目标值，有两个数
-        continue # 所以如果有一行不足2个数，跳过
-    n = int(parts[0]) # 输入数组长度
-    target = int(parts[1]) # 输入目标值
-    
-    nums_line = sys.stdin.readline() # 再读新的一行
-    nums = list(map(int, nums_line.strip().split())) # nums_line去掉首尾空白，按空格切分，转化为整数，变成列表
-    result = Solution().twoSum(nums, target) # 计算结果
+for line in sys.stdin:  # 每次读取一行输入
+    parts = line.strip().split()  # 第一行：去掉首尾空白，按空格切分
+    if len(parts) < 2:  # 题目要求第一行表示数组长度和目标值，有两个数
+        continue  # 所以如果有一行不足2个数，跳过
+    n = int(parts[0])  # 输入数组长度
+    target = int(parts[1])  # 输入目标值
+
+    nums_line = sys.stdin.readline()  # 再读新的一行
+    nums = list(map(int, nums_line.strip().split()))  # nums_line去掉首尾空白，按空格切分，转化为整数，变成列表
+    result = Solution().twoSum(nums, target)  # 计算结果
     if len(result) == 2 and result[0] > result[1]:
-        result[0], result[1] = result[1], result[0] # 要求下标升序
+        result[0], result[1] = result[1], result[0]  # 要求下标升序
 
-    print(" ".join(str(x) for x in result)) # 输出两个下标，空格分隔（看ACM要求输出）
-
-```python
-
+    print(" ".join(str(x) for x in result))  # 输出两个下标，空格分隔（看ACM要求输出）
+```
 
 # Key Points
 
-
+（此处可补充总结要点）
 
 # Complexity Analysis
-因为最长需要遍历整个数组，dict最长也存储整个数组
 
-时间复杂度：O(n)
+因为最长需要遍历整个数组，dict 最长也存储整个数组。
 
-空间复杂度：O(n)
-时间复杂度：O(n)
-
-空间复杂度：O(n)
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
