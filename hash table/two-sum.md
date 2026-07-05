@@ -34,7 +34,7 @@ class Solution:
                 return [index, hash[target - num]]
             hash[num] = index
         return
-```python
+
 
 ## ACM version
 
