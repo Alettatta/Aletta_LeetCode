@@ -23,22 +23,6 @@ https://labuladong.online/zh/problem/leetcode/two-sum/description/
 # Code
 
 ## LC version
-class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        # 要遍历每一个元素，需要存储元素的值和下标——使用哈希存储
-        hash = dict()
-        for index,num in enumerate(nums):
-            if target - num in hash:
-                return [index, hash[target - num]]
-            hash[num] = index
-        return 
-
-## ACM version
-ACM模式的注意点：① import完整的类 ② 数据在标准输入流stdin中，全是原始的文本字符串 ③ 用 print() 手动把结果写到标准输出流stdout ④ 写 while 或 for line in sys.stdin 来循环处理，直到文件结束（EOF）
-import sys # 引入系统模块，读取标准输入
-from typing import List # 引入List类型
-
-# 核心代码（LC部分）
 
 ```python
 class Solution:
@@ -50,6 +34,18 @@ class Solution:
                 return [index, hash[target - num]]
             hash[num] = index
         return
+```python
+
+## ACM version
+
+**ACM 模式的注意点：**
+
+- 需要 `import` 完整的类（包括 `sys`、`typing` 等）
+- 数据在标准输入流 `stdin` 中，全部是原始的文本字符串
+- 必须用 `print()` 手动将结果写到标准输出流 `stdout`
+- 需要写 `while` 或 `for line in sys.stdin` 循环处理，直到文件结束（EOF）
+
+```python
 
 # ACM读取输入输出部分，支持多组示例
 for line in sys.stdin: # 每次读取一行输入
@@ -67,6 +63,9 @@ for line in sys.stdin: # 每次读取一行输入
 
     print(" ".join(str(x) for x in result)) # 输出两个下标，空格分隔（看ACM要求输出）
 
+```python
+
+
 # Key Points
 
 
@@ -74,6 +73,9 @@ for line in sys.stdin: # 每次读取一行输入
 # Complexity Analysis
 因为最长需要遍历整个数组，dict最长也存储整个数组
 
+时间复杂度：O(n)
+
+空间复杂度：O(n)
 时间复杂度：O(n)
 
 空间复杂度：O(n)
