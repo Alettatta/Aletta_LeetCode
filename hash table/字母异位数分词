@@ -1,0 +1,126 @@
+LeetCode-Github错题库学习markdwon模板
+
+# Problem
+https://labuladong.online/zh/problem/leetcode/group-anagrams/description/
+
+
+# Problem Description
+字母异位词指的是由重新排列源单词的所有字母得到的一个新单词。例如 "eat" 和 "tea" 是字母异位词。
+
+为保证答案唯一，请按下列规则输出分组结果：
+
+每个分组内部的字符串按字典序升序排列。
+各个分组之间按"该分组内排序后的第一个字符串"的字典序升序排列。
+数据范围：
+
+1 <= strs.length <= 10^4
+0 <= strs[i].length <= 100
+strs[i] 仅包含小写英文字母。
+
+
+# Key Points
+需要遍历全部的元素，想哈希表方法（快速判断一个元素是否出现过）
+
+哈希存储的数据结构：
+- 数组（元素数量有限，例如字母a-z）
+- set（元素数量未定，注意集合的元素不能重复）
+- dict（map，注意确定好谁是key谁是value）
+
+
+# Solution
+因为需要每个单词排序后的样子，所以还是使用 dict
+
+注意一下 "".join() 的语法；hash.values() 的语法；还有要判断 index 是否存在
+
+
+# Code
+
+## LC version
+
+```python
+class Solution:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        hash = dict()
+        for str in strs:
+            index = "".join(sorted(str)) # 直接sorted(str)得到的是列表["a","e"]
+            if index not in hash: 
+                hash[index] = [str] # 不能直接处理这一行，要判断这个index是否已经存在
+            else:
+                hash[index].append(str)
+        return list(hash.values())
+```
+
+## ACM version
+
+**ACM 模式的注意点：**
+
+- 需要 import 完整的类（包括 sys、typing 等）
+- 数据在标准输入流 stdin 中，全部是原始的文本字符串
+- 必须用 print() 手动将结果写到标准输出流 stdout
+- 需要写 while 或 for line in sys.stdin 循环处理，直到文件结束（EOF）
+
+```python
+from typing import List
+from collections import defaultdict
+
+# -- core code template start
+
+class Solution:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        hash = dict()
+        for str in strs:
+            index = "".join(sorted(str)) # 直接sorted(str)得到的是列表["a","e"]
+            if index not in hash: 
+                hash[index] = [str] # 不能直接处理这一行，要判断这个index是否已经存在
+            else:
+                hash[index].append(str)
+        return list(hash.values())
+
+# -- core code template end
+
+
+import sys
+
+
+def normalize(groups):
+    """Normalize the result so that the answer is unique:
+    1. Sort each group lexicographically.
+    2. Sort groups by their first element (after the in-group sort).
+    """
+    for g in groups:
+        g.sort()
+    groups.sort(key=lambda g: g[0])
+    return groups
+
+
+def main():
+    out_lines = []
+    for line in sys.stdin:
+        n = int(line.strip())
+        strs = []
+        for _ in range(n):
+            next_line = sys.stdin.readline()
+            strs.append(next_line[:-1] if next_line.endswith('\n') else next_line)
+        result = Solution().groupAnagrams(strs)
+        result = normalize(result)
+
+        out_lines.append(str(len(result)))
+        for g in result:
+            out_lines.append(str(len(g)))
+            out_lines.extend(g)
+
+    sys.stdout.write('\n'.join(out_lines))
+    if out_lines:
+        sys.stdout.write('\n')
+
+
+main()
+```
+
+
+# Complexity Analysis
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
+
+
