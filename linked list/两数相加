@@ -1,0 +1,54 @@
+# Problem
+https://labuladong.online/zh/problem/leetcode/add-two-numbers/description/
+
+
+# Problem Description
+给你两个非空的链表，表示两个非负的整数。它们每位数字都是按照逆序的方式存储的，并且每个节点只能存储一位数字。
+
+请你将两个数相加，并以相同形式返回一个表示和的链表。
+
+你可以假设除了数字 0 之外，这两个数都不会以 0 开头。
+
+给你两个非空链表 l1 和 l2，每个节点存储一位数字，整数按逆序存储（即个位在链表头部）。请你计算这两个整数的和，并以相同的形式（逆序、每个节点一位数字）返回一个新链表。
+
+
+# Key Points
+新建链表的话就新建虚拟头结点dummy，注意while条件和循环机制
+
+
+
+# Code
+
+## LC version
+
+```python
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        # 需要新建链表，还是需要虚拟头结点
+        dummy = ListNode(-1)
+        p = dummy
+        p1 = l1
+        p2 = l2
+
+        # 思考如何用链表实现两数相加：其实就是不断加上节点.val，两个个位加完加十位……注意处理进位，每一个位数加完都要进位
+        carry = 0 # 记录进位
+        while p1 is not None or p2 is not None or carry is not 0: # 链表问题难点在while条件，注意是or，只要有一个不是none就还要加
+            val = carry # 每次不是从0开始，而是从上次的进位开始
+            if p1 is not None:
+                val += p1.val
+                p1 = p1.next
+            if p2 is not None:
+                val += p2.val
+                p2 = p2.next
+            # 处理进位
+            carry = val // 10
+            val = val % 10
+            p.next = ListNode(val)
+            p = p.next
+            
+        return dummy.next
+```
+
+# Complexity Analysis
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
