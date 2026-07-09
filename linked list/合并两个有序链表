@@ -1,0 +1,57 @@
+# Problem
+https://labuladong.online/zh/problem/leetcode/merge-two-sorted-lists/description/
+
+
+# Problem Description
+将两个升序链表合并为一个新的升序链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
+
+数据范围：
+
+两个链表的节点数目范围都是 [0, 50]
+
+-100 <= Node.val <= 100
+
+list1 和 list2 均按 非递减顺序 排列
+
+将两个升序链表 list1 和 list2 合并为一个新的升序链表并返回。
+
+
+# Key Points
+如果需要新建新链表就建立虚拟头结点；重点在于while循环的条件
+
+
+# Code
+
+## LC version
+
+```python
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        # 需要新建一个链表，所以创建虚拟头结点dummy，新链表用指针p表示
+        dummy = ListNode(-1)
+        p = dummy
+        p1 = list1 # l1、l2分别用指针p1、p2表示
+        p2 = list2
+
+        while p1 is not None and p2 is not None:
+            if p1.val < p2.val:
+                p.next = p1
+                p1 = p1.next
+            else:
+                p.next = p2
+                p2 = p2.next
+            p = p.next
+
+        # 如果一个链表遍历完了但是另一个还没有
+        if p1 is not None:
+            p.next = p1
+        if p2 is not None:
+            p.next = p2
+
+        return dummy.next
+```
+
+
+# Complexity Analysis
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
