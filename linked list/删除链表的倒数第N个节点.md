@@ -31,7 +31,7 @@ https://labuladong.online/zh/problem/leetcode/remove-nth-node-from-end-of-list/d
 2. 现在的 p1，只要再走 n - k 步，就能走到链表末尾的空指针。此时，再用一个指针 p2 指向链表头节点 head；让 p1 和 p2 同时向前走，p1 走到链表末尾的空指针时前进了 n - k 步，p2 也从 head 开始前进了 n - k 步，停留在第 n - k + 1 个节点上，即恰好停链表的倒数第 k 个节点上
 3. 这样，只遍历了一次链表，就获得了倒数第 k 个节点 p2。
    
-![删除链表的倒数第N个节点](./单链表倒数第k个节点.png)
+![删除链表的倒数第N个节点](./photos/单链表倒数第k个节点.png)
 
 代码实现如下：
 
