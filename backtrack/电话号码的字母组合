@@ -1,0 +1,111 @@
+# Problem
+https://labuladong.online/zh/problem/leetcode/letter-combinations-of-a-phone-number/description/
+
+
+# Problem Description
+给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+
+给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。
+
+
+# Solution
+建立哈希表映射数字和字符：不用建立字典，因为是2-9，可以建立index-value，用list格式即可
+
+输入的digits是定好顺序的，本质是元素无重复、不可复用的组合/子集问题（不是排序！因为顺序不可以颠倒）
+
+
+# Code
+
+## LC version
+
+```python
+class Solution:
+    def __init__(self):
+        self.mapping = [
+            "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+                       ]
+        self.ans = []
+        self.track = []
+        
+    def letterCombinations(self, digits: str) -> List[str]:
+        if not digits:
+            return self.ans
+        self.backtrack(digits, 0)
+        return self.ans
+        
+    def backtrack(self, digits, start):
+        # base case
+        if len(self.track) == len(digits):
+            self.ans.append(''.join(self.track.copy())) # track是list格式，要合并成字符串
+            return 
+
+        digit = ord(digits[start]) - ord('0') # ord得到ASCII码值，把字符转换为数字
+        for c in self.mapping[digit]:
+            # 做选择
+            self.track.append(c)
+            # 回溯
+            self.backtrack(digits, start + 1)
+            # 撤销选择
+            self.track.pop()
+```
+注意1. track的list形式怎么转换为字符串，用join
+
+注意2. digit本来是字符，需要转换为index（数字格式），所以使用ord转换ASCII
+
+注意3. if not digits和 if digits is None，如果用户没有给输入，也就是digits = ""，前者对的，但是后者不是None，wrong ans；一般处理空值情况都用if not
+
+## ACM version
+
+**ACM 模式的注意点：**
+
+- 需要 import 完整的类（包括 sys、typing 等）
+- 数据在标准输入流 stdin 中，全部是原始的文本字符串
+- 必须用 print() 手动将结果写到标准输出流 stdout
+- 需要写 while 或 for line in sys.stdin 循环处理，直到文件结束（EOF）
+
+```python
+import sys
+from typing import List
+
+class Solution:
+    def __init__(self):
+        self.mapping = [
+            "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+                       ]
+        self.ans = []
+        self.track = []
+        
+    def letterCombinations(self, digits: str) -> List[str]:
+        if not digits:
+            return self.ans
+        self.backtrack(digits, 0)
+        return self.ans
+        
+    def backtrack(self, digits, start):
+        # base case
+        if len(self.track) == len(digits):
+            self.ans.append(''.join(self.track.copy())) # track是list格式，要合并成字符串
+            return 
+
+        digit = ord(digits[start]) - ord('0') # ord得到ASCII码值，把字符转换为数字
+        for c in self.mapping[digit]:
+            # 做选择
+            self.track.append(c)
+            # 回溯
+            self.backtrack(digits, start + 1)
+            # 撤销选择
+            self.track.pop()
+
+for raw_line in sys.stdin:
+    digits = raw_line.rstrip("\n").rstrip("\r")
+    result = Solution().letterCombinations(digits)
+    result.sort()
+    print(len(result))
+    for s in result:
+        print(s)
+```
+
+
+# Complexity Analysis
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
