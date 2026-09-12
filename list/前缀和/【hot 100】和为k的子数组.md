@@ -50,43 +50,44 @@ class Solution:
 - 需要写 while 或 for line in sys.stdin 循环处理，直到文件结束（EOF）
 
 ```python
-import sys
-from typing import List
+# 因为子数组长度不定，所以不用滑动窗口，用前缀和即可
+# 子数组的sum如何用前缀和表示，因为前缀和到有效数组之前还存在一个gap，我们称为need
+# need + k = preSum[i]，所以需要建立need的哈希表，如果确实存在need，就一定有这样的子数组
+
+import sys 
 
 class Solution:
-    def subarraySum(self, nums: List[int], k: int) -> int:
-        # 第一想法是滑动窗口，但是不知道数组中元素的大小关系（无序），无法判断要不要扩大/缩小窗口
+    def subarraySum(self, nums, k):
+        # 首先建立前缀和数组
         n = len(nums)
-        preSum = [0] * (n+1)
-        preSum[0] = 0
+        preSum = [0] * (n + 1)
+        preSum[0] = 0 # 实际需要计算1……n上面preSum的值，那么range到n+1
+
+        # need，前缀和:该前缀和出现的次数
+        count = {0: 1}
         ans = 0
-        count = {0:1} # 前缀和到该前缀和出现次数的映射
-        
-        for i in range(1, n+1):
-            preSum[i] = preSum[i-1] + nums[i-1]
-            need = preSum[i] - k # 如果存在值为need的前缀和，说明存在以nums[i-1]结尾的子数组和为k
+
+        for i in range(1, n + 1):
+            # 建立前缀和数组
+            preSum[i] = preSum[i - 1] + nums[i - 1]
+            # 处理gap问题
+            need = preSum[i] - k
             if need in count:
                 ans += count[need]
+            # 这个gap不是我们需要的，但是要update一下count
             if preSum[i] not in count:
                 count[preSum[i]] = 1
             else:
                 count[preSum[i]] += 1
-                
         return ans
 
-tokens = []
-for line in sys.stdin:
-    tokens.extend(line.split())
-
+data = sys.stdin.read().split() # 读取全部输入，全都split开，data是一个列表（里面都是字符串）
 idx = 0
-while idx < len(tokens):
-    n = int(tokens[idx]); idx += 1
-    k = int(tokens[idx]); idx += 1
-    nums = [int(tokens[idx + i]) for i in range(n)]
-    idx += n
-    result = Solution().subarraySum(nums, k)
-
-    print(result)
+while idx < len(data):
+    n = int(data[idx]); idx += 1
+    k = int(data[idx]); idx += 1
+    nums = [int(x) for x in data[idx: idx + n]]; idx += n
+    print(Solution().subarraySum(nums, k))
 ```
 
 
