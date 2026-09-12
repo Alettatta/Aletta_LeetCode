@@ -1,0 +1,45 @@
+# Problem
+
+https://leetcode.cn/problems/find-pivot-index/description/
+
+# Problem Description
+
+给你一个整数数组 nums ，请计算数组的 中心下标 。
+
+数组 中心下标 是数组的一个下标，其左侧所有元素相加的和等于右侧所有元素相加的和。
+
+如果中心下标位于数组最左端，那么左侧数之和视为 0 ，因为在下标的左侧不存在元素。这一点对于中心下标位于数组最右端同样适用。
+
+如果数组有多个中心下标，应该返回 最靠近左边 的那一个。如果数组不存在中心下标，返回 -1 。
+
+
+# Code
+
+## LC version
+
+```python
+# 假设中心下标是i，有preSum[i] = sum(nums) - preSum[i + 1]
+
+class Solution:
+    def pivotIndex(self, nums: List[int]) -> int:
+        n = len(nums)
+        total = sum(nums)
+
+        # 计算前缀和
+        preSum = [0] * (n + 1)
+        preSum[0] = 0
+        for i in range(n):
+            preSum[i + 1] = preSum[i] + nums[i]
+        
+        for i in range(0, n):
+            if preSum[i] == total - preSum[i + 1]:
+                return i
+    
+        return -1
+```
+
+
+
+# Complexity Analysis
+- 时间复杂度：O(1)
+- 空间复杂度：O(n)
