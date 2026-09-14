@@ -55,3 +55,42 @@ for line in sys.stdin:
         nums = list(map(int, sys.stdin.readline().strip().split()))
         print(Solution().sumArray(nums))
 ```
+
+## ACM 的2种写法
+
+第一种情况：输入流按照空格全部拆开，idx 统计字符情况，所以是 op = [int(x) for x in data[idx: idx + 3]]
+
+```python
+data = sys.stdin.read().strip().split()
+idx = 0
+while idx < len(data):
+    n = int(data[idx]); idx += 1 # 提取数组长度
+    nums = [int(x) for x in data[idx: idx + n]]; idx += n # 提取数组
+    m = int(data[idx]); idx += 1 # 提取oprations组数
+    operations = []
+    for _ in range(m):
+        op = [int(x) for x in data[idx: idx + 3]]; idx += 3
+        operations.append(op)
+    result = Solution().getModifiedArray(nums, operations)
+    for num in result:
+        print(num)
+```
+
+第二种情况：输入流按照行拆开，idx 统计行数，所以是 op = list(map(int, lines[idx].split()))
+
+```python
+lines = sys.stdin.read().strip().split('\n') # 按行拆分
+idx = 0
+while idx < len(lines):
+    n = int(lines[idx]); idx += 1 # 第一行，提取数组长度n
+    nums = list(map(int, lines[idx].split())); idx += 1 # 第二行，nums数组
+    m = int(lines[idx]); idx += 1 # 第三行，operations个数
+    operations = []
+    for _ in range(m):
+        op = list(map(int, lines[idx].split()))
+        operations.append(op)
+        idx += 1
+    result = Solution().getModifiedArray(nums, operations)
+    for num in result:
+        print(num)
+```
