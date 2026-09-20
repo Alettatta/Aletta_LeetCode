@@ -41,78 +41,38 @@ n == matrix[i].length
 
 # Code
 
-## LC version
+## ACM version
+
 
 ```python
+import sys 
+
 class Solution:
-    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
-        m = len(matrix) # 有多少行
-        n = len(matrix[0]) # 每一行有多少个元素
-        i = 0
-        j = n-1
+    def searchMatrix(self, matrix, target): # 注意拼接也不是全局有序，从右上角开始搜索
+        m, n = len(matrix), len(matrix[0])
+        i, j = 0, n - 1          # 从右上角开始
         while i < m and j >= 0:
             if matrix[i][j] == target:
                 return 'true'
-            elif matrix[i][j] < target:
-                i += 1
             elif matrix[i][j] > target:
-                j -= 1
-        return False
-```
-
-## ACM version
-
-**ACM 模式的注意点：**
-
-- 需要 import 完整的类（包括 sys、typing 等）
-- 数据在标准输入流 stdin 中，全部是原始的文本字符串
-- 必须用 print() 手动将结果写到标准输出流 stdout
-- 需要写 while 或 for line in sys.stdin 循环处理，直到文件结束（EOF）
-
-```python
-import sys
-from typing import List
-
-class Solution:
-    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
-        m = len(matrix) # 有多少行
-        n = len(matrix[0]) # 每一行有多少个元素
-        i = 0
-        j = n-1
-        while i < m and j >= 0:
-            if matrix[i][j] == target:
-                return True
-            elif matrix[i][j] < target:
-                i += 1
-            elif matrix[i][j] > target:
-                j -= 1
-        return False
-
-data = sys.stdin.read().split()
-index = 0
-while index < len(data):
-    m = int(data[index])
-    index += 1
-    n = int(data[index])
-    index += 1
-    target = int(data[index])
-    index += 1
-    
-    matrix = [] # 要放在这里因为有很多示例，每次循环要重来
-    for i in range(m):
-        row = [int(x) for x in data[index: index+n]]
-        matrix.append(row)
-        index += n
+                j -= 1           # 当前值太大，往左走
+            else:
+                i += 1           # 当前值太小，往下走
+        return 'false'
         
-    result = Solution().searchMatrix(matrix, target)
-
-    if result == True:
-        print('true')
-    else:
-        print('false')
+data = sys.stdin.read().strip().split('\n')
+idx = 0
+while idx < len(data):
+    m, n, target = map(int, data[idx].split()); idx += 1
+    matrix = []
+    for _ in range(m):
+        matrix.append(list(map(int, data[idx].split())))
+        idx += 1
+    ans = Solution().searchMatrix(matrix, target)
+    print(ans)
 ```
 
 
 # Complexity Analysis
-- 时间复杂度：O(logn)
+- 时间复杂度：O(m+n)
 - 空间复杂度：O(1)
