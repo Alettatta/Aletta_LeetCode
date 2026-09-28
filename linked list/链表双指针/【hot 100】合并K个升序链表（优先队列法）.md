@@ -46,7 +46,96 @@ lists[i].length 的总和不超过 10^4
 ## ACM version
 
 ```python
+import sys 
+import heapq
 
+
+# ListNode类
+class ListNode:
+    def __init__(self, val = 0, next = None):
+        self.val = val
+        self.next = next
+
+    # # heapq 在比较堆里的元素时，会调用元素的<运算符
+    # 如果你的堆里直接放 ListNode 对象，Python 不知道怎么比较两个节点谁大谁小，就会报错
+    # __lt__ 就是告诉 Python「按 val 比大小」
+    def __lt__(self, other): 
+            return self.val < other.val
+
+# 核心函数   
+class Solution:
+    def mergeKLists(self, lists):
+        if not lists:
+            return None
+
+        dummy = ListNode(-1)
+        p = dummy # 首先建立结果，因为未知头结点，使用dummy
+
+        pq = [] # 建立最小堆
+        for i, head in enumerate(lists):
+            if head is not None: # heappush(堆,(要插入的元素))
+                heapq.heappush(pq, (head.val, i, head)) # 元组比较，先比较节点值、都一样的话比较索引排序；head方便接下去
+
+        while pq:
+            val, i, node = heapq.heappop(pq)
+            p.next = node
+            if node.next is not None:
+                heapq.heappush(pq, (node.next.val, i, node.next))
+            p = p.next
+
+        return dummy.next
+
+
+# 列表->链表
+def build_list(array):
+    dummy = ListNode(-1)
+    p = dummy
+    for num in array:
+        p.next = ListNode(num)
+        p = p.next
+    return dummy.next
+        
+    
+# 链表打印成str数组
+def print_list(head):
+    vals = []
+    p = head
+    while p:
+        vals.append(str(p.val))
+        p = p.next
+    return (len(vals), " ".join(vals))
+
+
+# 主函数
+def main():
+    data = sys.stdin.read().strip().split("\n")
+    idx = 0
+    while idx < len(data): # 一定要这个，处理多组情况
+        k = int(data[idx]); idx += 1
+        lists = []
+        for _ in range(k):
+            parts = list(map(int, data[idx].split())); idx += 1
+            n = parts[0] # 这条链表的长度
+            nums = parts[1: 1 + n]
+            lists.append(build_list(nums))
+        
+        merged = Solution().mergeKLists(lists)
+        print(*print_list(merged)) # 解包运算符
+    
+if __name__ == "__main__":
+    main()
+```
+PS：解包运算符：ACM 里为什么常用 print(*arr)
+
+因为 ACM 题目输出经常要求一行空格分隔的数字，print(*arr) 一行搞定：
+
+```python
+print(*list_to_array(merged))
+# 输出：1 1 2 3 4 4 5 6
+如果题目要求别的格式：
+逗号分隔：print(*arr, sep=",")
+每个元素单独一行：print(*arr, sep="\n") 或循环 print(x)
+带方括号逗号（像 Python 列表）：print(arr) 或 print("[" + ",".join(map(str, arr)) + "]")
 ```
 
 # Complexity Analysis
