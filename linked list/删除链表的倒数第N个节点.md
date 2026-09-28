@@ -57,7 +57,69 @@ def findLastK(self, head: Optional[ListNode], k) -> Optional[ListNode]:
 ## ACM version
 
 ```python
+import sys 
 
+class ListNode:
+    def __init__(self, val = 0, next = None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    # 首先寻找倒数第k个节点-正数第n-k+1个节点
+    def find(self, head, k):
+        p1 = head
+        # 快指针先走k步，此时指向第k+1个节点
+        for _ in range(k):
+            p1 = p1.next
+        p2 = head # p2从第一个节点出发，还要走n-k步
+        while p1:
+            p1 = p1.next
+            p2 = p2.next
+        return p2
+    
+    # 小心要删除的节点是头结点，那么pre为None，所以要设置dummy处理边界
+    def removeNthFromEnd(self, head, n):
+        dummy = ListNode(-1)
+        dummy.next = head # 此时dummy才是真正的“头结点”
+        pre = self.find(dummy, n + 1) # 要找到倒数第n+1个节点（和加上dummy无关，dummy只是一个“头”）
+        pre.next = pre.next.next
+        return dummy.next
+
+
+def build_list(array):
+    dummy = ListNode(-1)
+    p = dummy
+    for num in array:
+        p.next = ListNode(num)
+        p = p.next
+    return dummy.next
+
+
+def print_list(head):
+    vals = []
+    p = head
+    while p:
+        vals.append(str(p.val))
+        p = p.next
+    print(len(vals), " ".join(vals))
+
+
+def main():
+    data = sys.stdin.read().strip().split("\n")
+    idx = 0
+    while idx < len(data):
+        parts = list(map(int, data[idx].split()))
+        length = parts[0]
+        arr = list(map(int, parts[1: 1 + length])); idx += 1
+        
+        n = int(data[idx]); idx += 1
+        
+        head = build_list(arr)
+        ans = Solution().removeNthFromEnd(head, n)
+        print_list(ans)
+
+if __name__ == "__main__":
+    main()
 ```
 
 
