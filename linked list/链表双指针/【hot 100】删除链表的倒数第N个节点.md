@@ -126,3 +126,22 @@ if __name__ == "__main__":
 # Complexity Analysis
 - 时间复杂度：O(n)
 - 空间复杂度：O(n)
+
+# 拓展
+寻找单链表的中点：每当慢指针 slow 前进一步，快指针 fast 就前进两步，这样，当 fast 走到链表末尾时，slow 就指向了链表中点
+
+```python
+# 1->2->3->4->5，fast和slow都从head开始；终止条件是fast走到5，也就是fast.next=None
+class Solution:
+    # 快慢指针初始化指向 head
+    def middleNode(self, head: ListNode) -> ListNode:
+        slow = head
+        fast = head
+        # 快指针走到末尾时停止
+        while fast and fast.next:
+            # 慢指针走一步，快指针走两步
+            slow = slow.next
+            fast = fast.next.next
+        # 慢指针指向中点
+        return slow
+```
