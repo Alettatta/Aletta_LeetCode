@@ -23,7 +23,7 @@ https://labuladong.online/zh/problem/leetcode/remove-nth-node-from-end-of-list/d
 
 问题：如何找到单链表的倒数第K个节点？
 
-假设链表有 n 个节点，倒数第 k 个节点就是正数第 n - k + 1 个节点，问题是链表需要遍历一遍 O(n) 才能求出 n，然后再遍历得到 n - k + 1
+假设链表有 n 个节点，**倒数第 k 个节点就是正数第 n - k + 1 个节点**，问题是链表需要遍历一遍 O(n) 才能求出 n，然后再遍历得到 n - k + 1
 
 那么，我们能不能只遍历一次链表，就算出倒数第 k 个节点？假设 k = 2，思路如下：
 
@@ -39,46 +39,25 @@ https://labuladong.online/zh/problem/leetcode/remove-nth-node-from-end-of-list/d
 # 寻找链表的倒数第k个节点
 def findLastK(self, head: Optional[ListNode], k) -> Optional[ListNode]:
   # p1先走k步
-  p1 = head 
-  for i in range(0, k):
-    p1 = p1.next
-    # 这个时候p2从head出发
-    p2 = head
-  # p2和p1都走n-k步（因为未知完整长度n，写代码不能写n），p1走到none
-  while p1 is not None:
-    p2 = p2.next
-    p1 = p1.next
+   p1 = head 
+   for i in range(0, k):
+       p1 = p1.next
+   # 这个时候p2从head出发
+   p2 = head
+   # p2和p1都走n-k步（因为未知完整长度n，写代码不能写n），p1走到none
+   while p1 is not None:
+      p2 = p2.next
+      p1 = p1.next
     # 此时p2的位置就是倒数第k个节点
-    return p2
+   return p2
 ```
 
 # Code
 
-## LC version
+## ACM version
 
 ```python
-class Solution:
-    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
-        dummy = ListNode(-1) # 要建立虚拟头结点，处理删除头节点的情况
-        dummy.next = head
-        p = self.findLastK(dummy, n + 1) # 要删除结点的前一个节点
-        p.next = p.next.next
-        return dummy.next
 
-    # 寻找链表的倒数第k个节点
-    def findLastK(self, head: Optional[ListNode], k) -> Optional[ListNode]:
-        # p1先走k步
-        p1 = head 
-        for i in range(0, k):
-            p1 = p1.next
-        # 这个时候p2从head出发
-        p2 = head
-        # p2和p1都走n-k步（因为未知完整长度n，写代码不能写n），p1走到none
-        while p1 is not None:
-            p2 = p2.next
-            p1 = p1.next
-        # 此时p2的位置就是倒数第k个节点
-        return p2
 ```
 
 
