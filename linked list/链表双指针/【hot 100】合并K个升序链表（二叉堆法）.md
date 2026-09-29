@@ -141,3 +141,56 @@ print(*list_to_array(merged))
 # Complexity Analysis
 - 该算法的时间复杂度相当于是把 k 条链表分别遍历 O(logk) 次。那么假设 k 条链表的元素总数是 N，该算法的时间复杂度就是 O(Nlogk)
 - 该算法的空间复杂度只有递归树堆栈的开销，也就是 O(logk)
+
+# 类似问题
+## 题目
+
+https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/description/
+
+## Description
+给定两个以 非递减顺序排列 的整数数组 nums1 和 nums2 , 以及一个整数 k 。
+
+定义一对值 (u,v)，其中第一个元素来自 nums1，第二个元素来自 nums2 。
+
+请找到和最小的 k 个数对 (u1,v1),  (u2,v2)  ...  (uk,vk) 。
+
+## Solution
+
+举例：nums1 = [1, 7, 11], nums2 = [2, 4, 6]，他们的和可以罗列为一个矩阵；矩阵的特点是每行从左到右、每列从上到下都递增
+```python
+        2     4     6
+1       3     5     7
+7       9    11    13
+11     13    15    17
+```
+
+使用**最小堆**的好处是，我**不用比较某个数字下面和右边哪个更小，全都heappush进去自动比就行：这就需要我们一开始放进第一列，后面都push进弹出元素的右边就行（或者一开始放第一行，后面都push进下面）**
+
+首先我把第一列全部放进堆：池 = { (3, i0j0), (9, i1j0), (13, i2j0) }
+
+第一次弹出3，然后把他的右边5放进去，5自动浮上来，然后push5的右边是7……
+
+## Code
+
+```python
+import heapq
+
+class Solution:
+    def kSmallestPairs(self, nums1: list[int], nums2: list[int], k: int) -> list[list[int]]:
+        if not nums1 or not nums2:
+            return []
+
+        # 先把第一列放进堆：(和, i, j)
+        heap = []
+        for i in range(min(len(nums1), k)):# 只需前 k 行，多的用不上（因为最次情况就是全是nums1[0]+nums2[j]）
+            heapq.heappush(heap, (nums1[i] + nums2[0], i, 0))
+
+        ans = []
+        while heap and len(ans) < k:
+            total, i, j = heapq.heappop(heap)
+            ans.append([nums1[i], nums2[j]])
+            if j + 1 < len(nums2): # 向右扩展
+                heapq.heappush(heap, (nums1[i] + nums2[j + 1], i, j + 1)) 
+
+        return ans
+```
