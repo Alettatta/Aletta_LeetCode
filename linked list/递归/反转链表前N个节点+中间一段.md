@@ -38,6 +38,10 @@ head 在第 N 个时，剩 1 个要反转 → n = 1
 "还剩 1 个要反转"意味着 head 就是最后一个。
 ```
 
+PS: 什么是base case
+
+base case（基本情况 / 递归出口） 就是递归不再往下调用自己的那一步，直接返回结果。递归函数必须有 base case，否则会无限调用下去，直到栈溢出。它回答的问题是："什么时候这个问题已经小到不用再递归了？"
+
 # Problem
 https://leetcode.cn/problems/reverse-linked-list-ii/description/
 
