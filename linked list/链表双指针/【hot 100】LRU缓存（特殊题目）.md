@@ -39,7 +39,7 @@ put和get的实现逻辑如下：
 
 ![LRU2](../photos/LRU2.jpg)
 
-PS：orderedDict
+PS：orderedDict：旧元素在队首，新元素从队尾插入
 
 ```python
 from collections import OrderedDict
