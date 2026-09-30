@@ -83,42 +83,29 @@ getSum3 算法从中间二分，递归树就是一个较为平衡的二叉树，
 ## LC version
 
 ```python
+# 逐一合并，先合并2个链表，然后结果继续往下合并
 class Solution:
     def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
-        # 采用分治思想，首先考虑合并2个升序链表，然后使用递归
-        # 因为遍历整个数组来不断进行两两合并很耗费时间复杂度，可以从中间二分
-        if len(lists) == 0:
-            return None # return []因为要求返回要么listnode要么none
-        return self.mergeKLists2(lists, 0, len(lists) - 1)
+        if not lists:
+            return None
 
-    # 定义：合并 lists[start..end] 为一个有序链表
-    def mergeKLists2(self, lists: list['ListNode'], start: int, end: int) -> Optional[ListNode]:
-        if start == end: # 只有一组元素
-            return lists[start]
-        mid = (start + end) // 2
-        left = self.mergeKLists2(lists, start, mid) # 合并左半边 lists[start..mid] 为一个有序链表
-        right = self.mergeKLists2(lists, mid + 1, end) # 合并右半边 lists[mid+1..end] 为一个有序链表
-        return self.mergeTwoLists(left, right)
-        
-    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        ans = None
+        for node in lists:
+            ans = self.mergeTwoLists(ans, node)
+        return ans
+
+    def mergeTwoLists(self, l1, l2):
         dummy = ListNode(-1)
         p = dummy
-        p1, p2 = list1, list2
-
-        while p1 is not None and p2 is not None:
-            if p1.val < p2.val:
-                p.next = p1
-                p1 = p1.next
+        while l1 and l2:
+            if l1.val <= l2.val:
+                p.next = l1
+                l1 = l1.next
             else:
-                p.next = p2
-                p2 = p2.next
+                p.next = l2
+                l2 = l2.next
             p = p.next
-
-        if p1 is not None:
-            p.next = p1
-        if p2 is not None:
-            p.next = p2
-
+        p.next = l1 if l1 else l2
         return dummy.next
 ```
 
