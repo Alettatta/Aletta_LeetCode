@@ -4,22 +4,38 @@
 
 比如1-2-3-4-5-6，反转前3个节点得到3-2-1-4-5-6
 
-**依然采用递归的思想：需要反转前N个节点，也就是反转前N-1个节点、第N个节点指向head，然后head.next=N+1个节点**
+**依然采用递归的思想：需要反转前N个节点，也就是反转head后面的N-1个节点、原来的head.next指向head，然后head.next=N+1个节点**
 
 ```python
+# 从 head 这个节点开始，反转连续的 n 个节点
+# n 可以理解为"从当前 head 开始，还剩几个节点要反转"
 class Solution:
-    def __init__(self):# 记住“没被反转的那部分的头”，让反转后的尾巴能接上它
+    def __init__(self):
         self.successor = None # 记录第N+1个节点
 
-    # 递归结构：反转前N个节点也就是反转前N-1个节点，然后第N个节点指向head
     def reverseN(self, head, n):
-        if n == 1:
-            self.successor = head.next
+        # base case
+        if n == 1: # 当前 head 就是这一整段要反转的最后一个节点，也就是第 N 个节点
+            self.successor = head.next # 那么第N+1节点（用successor记录）就是head.next
             return head
         new_head = self.reverseN(head, n - 1)
-        head.next.next = head # 3.next = 1
+        head.next.next = head
         head.next = self.successor
         return new_head
+```
+
+PS:为什么base case：if n == 1: # 当前 head 就是这一整段要反转的最后一个节点，也就是第 N 个节点
+```python
+head=1, n=3:   [1  2  3]  4  5     ← 要反转 1,2,3
+head=2, n=2:    1 [2  3] 4  5      ← 要反转 2,3
+head=3, n=1:    1  2 [3] 4  5      ← 要反转 3（就它一个，它是最后一个）
+
+n 可以理解为"从当前 head 开始，还剩几个节点要反转"：
+head 在第 1 个时，剩 N 个要反转 → n = N
+head 在第 2 个时，剩 N-1 个要反转 → n = N-1
+…
+head 在第 N 个时，剩 1 个要反转 → n = 1
+"还剩 1 个要反转"意味着 head 就是最后一个。
 ```
 
 # Problem
