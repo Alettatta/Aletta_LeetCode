@@ -22,38 +22,32 @@ k 是一个正整数，它的值小于或等于链表的长度。如果节点总
 ## LC version
 
 ```python
+# 反转head开头的k个节点->移到k+1位置(即successor)处继续调用reverseKGroup->这两段拼接起来
+
 class Solution:
+    def __init__(self):
+        self.successor = None
+        
     def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
-        # 特殊情况
-        if head is None:
-            return None
-            
-        # 仍然是左闭右开区间[a,b)包含k个要反转的元素
-        a = b = head
-        for i in range(k):
-            # 不足k个，不需要翻转
-            if b is None:
+        # 看个数够不够k
+        node = head
+        for _ in range(k):
+            if not node:
                 return head
-            b = b.next
-
-        # 翻转前k个元素
-        newHead = self.reverse(a, b)
-        # 后面的也翻转
-        a.next = self.reverseKGroup(b, k)
-        return newHead
-
-    
-    # 反转区间 [a, b) 的元素，注意是左闭右开
-    def reverse(self, a, b):
-        pre = None
-        cur = a
-        nxt = a # pre -> cur -> nxt
-        while cur != b:
-            nxt = cur.next
-            cur.next = pre
-            pre = cur
-            cur = nxt
-        return pre
+            node = node.next
+        
+        first = self.reverseN(head, k) # 反转head开头的k个节点
+        head.next = self.reverseKGroup(self.successor, k) # 从k+1位置开始再每k个反转
+        return first
+        
+    def reverseN(self, head, n): # 反转以head开头的前N个节点
+        if n == 1:
+            self.successor = head.next
+            return head
+        second = self.reverseN(head.next, n - 1)
+        head.next.next = head
+        head.next = self.successor
+        return second
 ```
 
 # Complexity Analysis
