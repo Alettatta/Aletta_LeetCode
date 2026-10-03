@@ -1,3 +1,42 @@
+# 补充：数据流中的第K大元素
+https://leetcode.cn/problems/kth-largest-element-in-a-stream/
+
+设计一个找到数据流中第 k 大元素的类（class）。注意是排序后的第 k 大元素，不是第 k 个不同的元素。
+
+请实现 KthLargest 类：
+
+KthLargest(int k, int[] nums) 使用整数 k 和整数流 nums 初始化对象。
+
+int add(int val) 将 val 插入数据流 nums 后，返回当前数据流中第 k 大的元素。
+
+```python
+# 模拟一下k=3, nums = [4,5,8,2]情形
+# add(3):[2,3,4,5,8]，第三大为4
+# add(5):[2,3,4,5,5,8]，第三大为5
+# add(10):[2,3,4,5,5,8,10]，第三大为5
+# add(9):[2,3,4,5,5,8,9,10]，第三大为8
+# add(4):[2,3,4,4,5,5,8,9,10]，第三大为8
+# 求第K大元素：倒着看nums，提取K个元素，要求的数字为K个中的最小值，所以维护一个大小为K的小顶堆即可————堆中始终保存当前数据流中最大的 k 个元素；堆顶就是这 k 个元素中最小的那个，也就是第 k 大的元素
+
+import heapq
+
+class KthLargest:
+    # 初始化，nums里面的元素依次加入堆，如果堆的大小超过K就弹出堆顶
+    def __init__(self, k: int, nums: list[int]):
+        self.k = k 
+        self.heap = nums[:]
+        heapq.heapify(self.heap) # 先整体堆化
+        while len(self.heap) > k:
+            heapq.heappop(self.heap) # 循环弹出，直到只剩 k 个
+
+    # 把 val 加入堆；如果堆的大小超过 k，弹出堆顶；返回堆顶（第 k 大元素）
+    def add(self, val: int) -> int:
+        heapq.heappush(self.heap, val)
+        if len(self.heap) > self.k:
+            heapq.heappop(self.heap)
+        return self.heap[0]
+```
+
 # Problem
 https://labuladong.online/zh/problem/leetcode/kth-largest-element-in-an-array/description/
 
@@ -11,69 +50,36 @@ https://labuladong.online/zh/problem/leetcode/kth-largest-element-in-an-array/de
 
 # Solution
 
-可以把**小顶堆（每个节点下方的所有节点的值都比它大）** pq 理解成一个筛子，较大的元素会沉淀下去，较小的元素会浮上来；当堆大小超过 k 的时候，我们就删掉堆顶的元素，因为这些元素比较小，而我们想要的是前 k 个最大元素嘛。
-
-当 nums 中的所有元素都过了一遍之后，筛子里面留下的就是最大的 k 个元素，而堆顶元素是堆中最小的元素，也就是「第 k 个最大的元素」。
-
-二叉堆插入和删除的时间复杂度和堆中的元素个数有关，在这里我们堆的大小不会超过 k，所以插入和删除元素的复杂度是 O(logK)，再套一层 for 循环，总的时间复杂度就是 O(NlogK)。
+注意：**heapify 是一次性把一个无序列表整理成堆，而 heappush 是每次插入时增量维护。两者选一个即可**
 
 
 # Code
 
-## LC version
-
-```python
-import heapq
-
-class Solution:
-    def findKthLargest(self, nums: List[int], k: int) -> int:
-        pq = [] # 建立小顶堆，堆顶是最小元素
-        for e in nums:
-            heapq.heappush(pq, e) # 每个元素都要过一遍二叉堆
-            if len(pq) > k:
-                heapq.heappop(pq) # 堆中元素多于 k 个时，删除堆顶元素
-        return pq[0] # pq 中剩下的是 nums 中 k 个最大元素，堆顶是最小的那个，即第 k 个最大元素
-```
 
 ## ACM version
 
-**ACM 模式的注意点：**
-
-- 需要 import 完整的类（包括 sys、typing 等）
-- 数据在标准输入流 stdin 中，全部是原始的文本字符串
-- 必须用 print() 手动将结果写到标准输出流 stdout
-- 需要写 while 或 for line in sys.stdin 循环处理，直到文件结束（EOF）
 
 ```python
-import sys
-from typing import List
+import sys 
 import heapq
 
+# 找nums中第K大元素，维护一个大小为K的小顶堆，堆顶就是答案
+class Solution:   
+    def findKthLargest(self, nums, k):
+        heap = []
+        for num in nums:
+            heapq.heappush(heap, num)
+            if len(heap) > k:
+                heapq.heappop(heap)
+        return heap[0]
 
-class Solution:
-    def findKthLargest(self, nums: List[int], k: int) -> int:
-        pq = [] # 建立小顶堆，堆顶是最小元素
-        for e in nums:
-            heapq.heappush(pq, e) # 每个元素都要过一遍二叉堆
-            if len(pq) > k:
-                heapq.heappop(pq) # 堆中元素多于 k 个时，删除堆顶元素
-        return pq[0] # pq 中剩下的是 nums 中 k 个最大元素，堆顶是最小的那个，即第 k 个最大元素
-
-
-header = None
-for line in sys.stdin:
-    parts = line.strip().split()
-    if not parts:
-        continue
-    if header is None:
-        header = (int(parts[0]), int(parts[1]))
-    else:
-        n, k = header
-        nums = list(map(int, parts))
-        result = Solution().findKthLargest(nums, k)
-        print(result)
-
-        header = None
+data = sys.stdin.read().strip().split('\n')
+idx = 0
+while idx < len(data):
+    n, k = map(int, data[idx].split()); idx += 1
+    nums = list(map(int, data[idx].split())); idx += 1
+    ans = Solution().findKthLargest(nums, k)
+    print(ans)
 ```
 
 
