@@ -56,6 +56,63 @@ for line in sys.stdin:
         print(Solution().sumArray(nums))
 ```
 
+```python
+# 给定一棵二叉树的 LeetCode 风格层序序列化字符串，返回它的前序遍历结果
+
+# 已知一棵二叉树层序序列遍历结果token：'1 # 2 3'，返回这棵树的前序遍历结果
+from collections import deque
+import sys
+
+class TreeNode:
+    def __init__(self, val = 0, left = None, right = None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def preorderTraversal(self, tree):
+        root = self.build_tree(tree)
+        ans = []
+        self.traverse(root, ans)
+        return ans
+        
+    def build_tree(self, s):
+        data = s.strip().split() # data = ['1', '2', '#'……]
+        if not data or data[0] == '#':
+            return None
+        root = TreeNode(int(data[0]))
+        idx = 1
+        q = deque([root])
+        while q and idx < len(data):
+            node = q.popleft()
+            if idx < len(data):
+                t = data[idx]; idx += 1
+                if t != '#':
+                    node.left = TreeNode(int(t))
+                    q.append(node.left)
+            if idx < len(data):
+                t = data[idx]; idx += 1
+                if t != '#':
+                    node.right = TreeNode(int(t))
+                    q.append(node.right)
+        return root
+
+    def traverse(self, root, ans):
+        if root is None:
+            return
+        ans.append(root.val) # root->left->right，前序位置加上节点值
+        self.traverse(root.left, ans)
+        self.traverse(root.right, ans)
+
+data = sys.stdin.read().strip().split('\n')
+idx = 0
+while idx < len(data):
+    length = int(data[idx]); idx += 1
+    tree = data[idx]; idx += 1
+    result = Solution().preorderTraversal(tree)
+    print(' '.join(str(num) for num in result))
+```
+
 ## ACM 的2种写法
 
 第一种情况：输入流按照空格全部拆开，idx 统计字符情况，所以是 op = [int(x) for x in data[idx: idx + 3]]
