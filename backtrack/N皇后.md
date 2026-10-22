@@ -16,140 +16,71 @@ n 皇后问题研究的是如何将 n 个皇后放置在 n × n 的棋盘上，�
 将每个方案表示为长度为 n 的整数序列 (c_0,c_1,…,c_n-1)，其中 c_i 表示第 i 行皇后所在的列下标（列下标从 0 开始）。所有方案按该整数序列的字典序升序排列。
 
 
-# Solution
-对于任意一个皇后，它所在的行、列和对角线（左上、右上、左下、右下）都没有其他皇后，所以这就是一个符合规则的解。
-
-本质是排列问题，不可复用
 
 # Code
 
-## LC version
-
-```python
-class Solution:
-    def __init__(self):
-        self.ans = []
-        
-    def solveNQueens(self, n: int) -> List[List[str]]: # 输入棋盘边长 n，返回所有合法的放置
-        board = ['.' * n for _ in range(n)] # '.' 表示空，'Q' 表示皇后，初始化空棋盘
-        self.backtrack(board, 0)
-        return self.ans
-
-    def backtrack(self, board, row):
-        # base case
-        if row == len(board):
-            self.ans.append(board.copy())
-            return
-
-        n = len(board)
-        for col in range(n):
-            if not self.isValid(board, row, col):
-                continue
-            # 做选择
-            board[row] = board[row][:col] + 'Q' + board[row][col+1:]
-            self.backtrack(board, row+1)
-            # 撤销选择
-            board[row] = board[row][:col] + '.' + board[row][col+1:]
-
-    # 是否可以在 board[row][col] 放置皇后？
-    def isValid(self, board, row, col):
-        n = len(board)
-        # 检查列是否有皇后互相冲突
-        for i in range(row):
-            if board[i][col] == 'Q':
-                return False
-        # 检查右上方是否有皇后互相冲突
-        for i, j in zip(range(row - 1, -1, -1), range(col + 1, n)):
-            if board[i][j] == 'Q':
-                return False
-        # 检查左上方是否有皇后互相冲突
-        for i, j in zip(range(row - 1, -1, -1), range(col - 1, -1, -1)):
-            if board[i][j] == 'Q':
-                return False
-        return True
-```
-
 ## ACM version
 
-**ACM 模式的注意点：**
-
-- 需要 import 完整的类（包括 sys、typing 等）
-- 数据在标准输入流 stdin 中，全部是原始的文本字符串
-- 必须用 print() 手动将结果写到标准输出流 stdout
-- 需要写 while 或 for line in sys.stdin 循环处理，直到文件结束（EOF）
-
 ```python
-import sys
-from typing import List
+import sys 
+
+
+# 排列问题，有重复元素不可以复用，同一行/列/斜线不能有Q
+# 对于一个Q，首先我们选行，保证每行只有一个Q
+# 接下来选列：① 不能同列（col不能被占用）
+# ② 不能同主对角线（左上-右下）：row-col相同
+# ③ 不能同副对角线（右上-左下）：row+col相同
 
 class Solution:
-    def __init__(self):
-        self.ans = []
-        
-    def solveNQueens(self, n: int) -> List[List[str]]: # 输入棋盘边长 n，返回所有合法的放置
-        board = ['.' * n for _ in range(n)] # '.' 表示空，'Q' 表示皇后，初始化空棋盘
-        self.backtrack(board, 0)
-        return self.ans
+    def solveNQueens(self, n):
+        ans  = []
+        board = [['.'] * n for _ in range(n)] # 建立棋盘矩阵
 
-    def backtrack(self, board, row):
-        # base case
-        if row == len(board):
-            self.ans.append(board.copy())
-            return
+        # 从列出发思考问题，行只要保证不在同一行即可
+        cols = set() # 已占用的列
+        diag1 = set() # 已占用的主对角线 row - col
+        diag2 = set() # # 已占用的副对角线 row + col
 
-        n = len(board)
-        for col in range(n):
-            if not self.isValid(board, row, col):
-                continue
-            # 做选择
-            board[row] = board[row][:col] + 'Q' + board[row][col+1:]
-            self.backtrack(board, row+1)
-            # 撤销选择
-            board[row] = board[row][:col] + '.' + board[row][col+1:]
+        def backtrack(row): # 从第0行开始放
+            # base case：n 行都放好了，收集一种方案
+            if row == n:
+                ans.append([''.join(r) for r in board])
+                return
 
-    # 是否可以在 board[row][col] 放置皇后？
-    def isValid(self, board, row, col):
-        n = len(board)
-        # 检查列是否有皇后互相冲突
-        for i in range(row):
-            if board[i][col] == 'Q':
-                return False
-        # 检查右上方是否有皇后互相冲突
-        for i, j in zip(range(row - 1, -1, -1), range(col + 1, n)):
-            if board[i][j] == 'Q':
-                return False
-        # 检查左上方是否有皇后互相冲突
-        for i, j in zip(range(row - 1, -1, -1), range(col - 1, -1, -1)):
-            if board[i][j] == 'Q':
-                return False
-        return True
+            for col in range(n):
+                # 剪枝，如果冲突就跳过：
+                if col in cols or (row - col) in diag1 or (row + col) in diag2:
+                    continue 
+
+                # 选择皇后位置
+                board[row][col] = 'Q'
+                cols.add(col)
+                diag1.add(row - col)
+                diag2.add(row + col)
+                
+                # 下一行
+                backtrack(row + 1)
+                
+                # 回溯
+                board[row][col] = '.'
+                cols.remove(col)
+                diag1.remove(row - col)
+                diag2.remove(row + col)
+
+        backtrack(0)
+        return ans
 
 
-# Convert a solution (list[str]) into the column-index sequence
-# used as the lexicographic sort key.
-def queen_cols(board):
-    cols = []
-    for row in board:
-        cols.append(row.index('Q'))
-    return cols
-
-
-for line in sys.stdin:
-    line = line.strip()
-    if not line:
-        continue
-    n = int(line)
-    result = Solution().solveNQueens(n)
-    result.sort(key=queen_cols)
-
-    print(len(result))
-    for i, board in enumerate(result):
-        for row in board:
+data = sys.stdin.read().strip().split('\n')
+idx = 0
+while idx < len(data):
+    n = int(data[idx]); idx += 1
+    ans = Solution().solveNQueens(n)
+    print(len(ans))
+    for ch in ans:
+        for row in ch:
             print(row)
-        if i + 1 < len(result):
-            print()
 ```
-
 
 # Complexity Analysis
 - 时间复杂度：O(mn)
