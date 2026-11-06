@@ -18,25 +18,17 @@ https://labuladong.online/zh/problem/leetcode/subarray-sum-equals-k/description/
 ## LC version
 
 ```python
+# 第一想法是滑动窗口，但是不知道数组中元素的大小关系（无序），无法判断要不要扩大/缩小窗口
 class Solution:
-    def subarraySum(self, nums: List[int], k: int) -> int:
-        # 第一想法是滑动窗口，但是不知道数组中元素的大小关系（无序），无法判断要不要扩大/缩小窗口
-        n = len(nums)
-        preSum = [0] * (n+1)
-        preSum[0] = 0
+    def subarraySum(self, nums, k):
         ans = 0
-        count = {0:1} # 前缀和到该前缀和出现次数的映射
-        
-        for i in range(1, n+1):
-            preSum[i] = preSum[i-1] + nums[i-1]
-            need = preSum[i] - k # 如果存在值为need的前缀和，说明存在以nums[i-1]结尾的子数组和为k
-            if need in count:
-                ans += count[need]
-            if preSum[i] not in count:
-                count[preSum[i]] = 1
-            else:
-                count[preSum[i]] += 1
-                
+        prefix = 0
+        hash = {0: 1} # {前缀和: 该前缀出现了几次}
+        for x in nums:
+            prefix += x
+            if prefix - k in hash:
+                ans += hash[prefix - k]
+            hash[prefix] = hash.get(prefix, 0) + 1
         return ans
 ```
 
@@ -56,30 +48,19 @@ class Solution:
 
 import sys 
 
+
 class Solution:
     def subarraySum(self, nums, k):
-        # 首先建立前缀和数组
-        n = len(nums)
-        preSum = [0] * (n + 1)
-        preSum[0] = 0 # 实际需要计算1……n上面preSum的值，那么range到n+1
-
-        # need，前缀和:该前缀和出现的次数
-        count = {0: 1}
         ans = 0
-
-        for i in range(1, n + 1):
-            # 建立前缀和数组
-            preSum[i] = preSum[i - 1] + nums[i - 1]
-            # 处理gap问题
-            need = preSum[i] - k
-            if need in count:
-                ans += count[need]
-            # 这个gap不是我们需要的，但是要update一下count
-            if preSum[i] not in count:
-                count[preSum[i]] = 1
-            else:
-                count[preSum[i]] += 1
+        prefix = 0
+        hash = {0: 1} # {前缀和: 该前缀出现了几次}
+        for x in nums:
+            prefix += x
+            if prefix - k in hash:
+                ans += hash[prefix - k]
+            hash[prefix] = hash.get(prefix, 0) + 1
         return ans
+
 
 data = sys.stdin.read().split() # 读取全部输入，全都split开，data是一个列表（里面都是字符串）
 idx = 0
