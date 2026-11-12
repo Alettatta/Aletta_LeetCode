@@ -48,17 +48,19 @@ n == matrix[i].length
 import sys 
 
 class Solution:
-    def searchMatrix(self, matrix, target): # 注意拼接也不是全局有序，从右上角开始搜索
-        m, n = len(matrix), len(matrix[0])
-        i, j = 0, n - 1          # 从右上角开始
-        while i < m and j >= 0:
-            if matrix[i][j] == target:
-                return 'true'
-            elif matrix[i][j] > target:
-                j -= 1           # 当前值太大，往左走
+    def searchMatrix(self, matrix, target):
+        m = len(matrix)
+        for ch in matrix:
+            n = len(ch)
+        i, j = 0 , n - 1 # 比如从15这个数字开始（右上角）
+        while 0 <= i <= (m - 1) and 0 <= j <= (n - 1):
+            if target == matrix[i][j]:
+                return True
+            elif target < matrix[i][j]:
+                j -= 1
             else:
-                i += 1           # 当前值太小，往下走
-        return 'false'
+                i += 1
+        return False
         
 data = sys.stdin.read().strip().split('\n')
 idx = 0
