@@ -17,6 +17,30 @@ https://labuladong.online/zh/problem/leetcode/remove-nth-node-from-end-of-list/d
 
 给你一个链表的头结点 head 和一个整数 n，删除链表的倒数第 n 个结点，并返回删除后的链表头结点。
 
+# 第三轮解法
+问题在于如何寻找链表的倒数第n个节点，后面要注意从dummy出发来处理边界n==N的情况
+
+```python
+# 倒数第n+1个节点直接连倒数第n-1个节点
+# 设长度为N，倒数第n个节点就是正数第N-n+1个节点——如何不回头的找到这个节点
+# p1从head出发走n步，此时它还要走N-n步就到达尾节点下一节点None；让p2从head出发走N-n步，就指向了要找的节点
+class Solution:
+    def removeNthFromEnd(self, head, n):
+        dummy = ListNode(-1)
+        dummy.next = head
+        
+        p1 = dummy
+        for i in range(0, n): # p1多走一步
+            p1 = p1.next
+
+        p2 = dummy
+        while p1.next: # p2少走一步，结束的时候p2就指向要删除的节点的上一个节点
+            p2 = p2.next
+            p1 = p1.next
+
+        p2.next = p2.next.next
+        return dummy.next
+```python
 
 # Key Points
 步骤：找到链表的倒数第N个节点 -> 删除链表中间节点
