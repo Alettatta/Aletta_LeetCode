@@ -11,6 +11,9 @@ https://labuladong.online/zh/problem/leetcode/linked-list-cycle-ii/description/
 
 
 # Key Points
+**注意相遇点和环入口的关系，相遇的时候slow还要走k-m步才能到达入口**
+
+
 现在需要寻找环的起点，和[寻找重复数]一样，思路如下：**首先判断是否存在环（万一不存在）+再找环的入口**
 
 1. 还是快慢指针，fast++2，slow++1
