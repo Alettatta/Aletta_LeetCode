@@ -25,22 +25,24 @@ k 是一个正整数，它的值小于或等于链表的长度。如果节点总
 # 反转head开头的k个节点->移到k+1位置(即successor)处继续调用reverseKGroup->这两段拼接起来
 
 class Solution:
+    # 代表遍历到了哪个节点
     def __init__(self):
         self.successor = None
         
-    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
-        # 看个数够不够k
-        node = head
+    def reverseKGroup(self, head, k):
+        cur = head
         for _ in range(k):
-            if not node:
-                return head
-            node = node.next
-        
-        first = self.reverseN(head, k) # 反转head开头的k个节点
-        head.next = self.reverseKGroup(self.successor, k) # 从k+1位置开始再每k个反转
+            if not cur:
+                return head # 凑不到K个，直接返回head，因为没办法K个一组翻转
+            cur = cur.next
+        # 如果有至少k个，最后cur指向第k+1个节点
+
+        first = self.reverseN(head, k) # 第一段，最后得到first = 2
+        head.next = self.reverseKGroup(self.successor, k) # 第二段，从k+1开始
         return first
         
-    def reverseN(self, head, n): # 反转以head开头的前N个节点
+    # 翻转以head开头的n个节点
+    def reverseN(self, head, n): 
         if n == 1:
             self.successor = head.next
             return head
