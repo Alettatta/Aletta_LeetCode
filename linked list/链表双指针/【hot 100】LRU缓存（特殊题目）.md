@@ -67,6 +67,7 @@ class LRUCache:
         self.hashmap = collections.OrderedDict()
 
     # 根据key查找在hashmap里面是否存在
+    # 注意需要把key提升到最近使用，因为最近有查找记录
     def get(self, key): 
         if key not in self.hashmap:
             return -1
@@ -85,7 +86,7 @@ class LRUCache:
             return
         else: # 没有key，看容量是否允许
             if len(self.hashmap) >= self.cap:
-                old = next(iter(self.hashmap))
+                old = next(iter(self.hashmap)) # 取self.hashmap 里最早插入的那个键（在 LRU 缓存里就是"最久未使用"的键），next表示从迭代器中取出下一个元素，这里指的是最老的元素
                 self.hashmap.pop(old)
             self.hashmap[key] = value
         
