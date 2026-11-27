@@ -40,7 +40,7 @@ class Solution:
 
         p2.next = p2.next.next
         return dummy.next
-```python
+```
 
 # Key Points
 步骤：找到链表的倒数第N个节点 -> 删除链表中间节点
